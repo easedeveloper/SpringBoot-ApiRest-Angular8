@@ -1,0 +1,62 @@
+<app-detallefoto *ngIf="clienteSeleccionado" [cliente]="clienteSeleccionado"></app-detallefoto>
+<!-- Estamos pasando(inyectando) el clienteSeleccionado al Atributo cliente que lo tenemos en la clase
+detalle.component.ts -->
+<div class="card border-primary mb-3" >
+    <div class="card-header">CLIENTES</div>
+    <div class="card-body text-primary">
+      <h5 class="card-title">Listado de Clientes</h5>
+      <div class="my-2" text-left>
+        <button *ngIf="authService.hasRole('ROLE_ADMIN')" [routerLink]="['/clientes/form']" class="btn btn-rounded btn-primary" type="button">CREAR CLIENTE</button>
+        <!-- se va a preguntar en el button si el usuario tiene el rol admin
+            [<a [routerLink]="[ '/path', routeParam ]">name</a>]
+        -->
+      </div>  
+        <div *ngIf="clien?.length < 0" class="alert alert-info">
+            No hay registros en la Base de datos
+        </div>
+        <table class="table table-bordered table-striped" *ngIf="clien?.length > 0">
+            <thead>
+                <tr>
+                    <th *ngIf="authService.hasRole('ROLE_USER')">PERFIL</th>
+                    <th>NOMBRE</th>
+                    <th>APELLIDO</th>
+                    <th>FECHA</th>
+                    <th>TUTOR</th>
+                    <th *ngIf="authService.hasRole('ROLE_ADMIN')">EDITAR</th>
+                    <th *ngIf="authService.hasRole('ROLE_ADMIN')">ELIMINAR</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let clie of clien">
+    <!--SE ESTA QUITANDO POR USAR MODAL<td><button [routerLink]="['/clientes/ver', clie.a_id]" type="button" class="btn btn-success" > {{ clie.a_id }} </button></td>-->
+                    <td *ngIf="authService.hasRole('ROLE_USER')">
+                        <img (click)="abrirModal(clie)" *ngIf="clie?.foto"
+                        src="http://localhost:9090/api/upload/img/{{clie.foto}}" alt="{{clie.foto}}" class="img-thumbnail rounded"
+                        style="width: 64px; cursor: pointer;">
+
+                        <img (click)="abrirModal(clie)" *ngIf="!clie?.foto"
+                        src="http://localhost:9090/img/nouser.png" alt="Sin Foto" class="img-thumbnail rounded"
+                        style="width: 64px; cursor: pointer;">
+                        <!--<button type="button" (click)="abrirModal(clie)" class="btn btn-success" > {{ clie.a_id }} </button></td>-->
+                        <!--*ngIf="cliente?.foto", va a mostrar la imagen siempre y cuando exista la foto-->
+                    <td> {{ clie.a_name }} </td>
+                    <td> {{ clie.a_lastname | uppercase }} </td> <!--componente invertido | se le llama pippe -->
+                    <td> {{ clie.a_fechanaci | date: "EEEE dd, MMMM yyyy"}} </td>
+                    <td> {{ clie.a_tutor }} </td>
+                    <td *ngIf="authService.hasRole('ROLE_ADMIN')">
+                        <button type="button" name="editar" [routerLink]="['/clientes/form', clie.a_id]" class="btn btn-primary" >Editar</button>
+                    </td>
+                    <td *ngIf="authService.hasRole('ROLE_ADMIN')">
+                        <button type="button" name="eliminar" (click)="deletecliente(clie)" class="btn btn-danger" >Eliminar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- esto se llama inyeccion de dependecia entre un componente padre y un componente hijo, y 
+        para que sucede se debe utlizar el decorador @input en paginator.component  -->
+        <paginator-nav *ngIf="paginador" [paginator]="paginador"></paginator-nav> 
+        <!-- *ngIf="paginador, validamos que el paginador exista, se espera que el cliente.component halla asiganado
+        la paginador que contenga los atributos 
+        [paginador], es el atributo del componente    -->
+    </div>
+ </div>

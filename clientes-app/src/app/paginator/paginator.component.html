@@ -1,0 +1,29 @@
+<ul *ngIf="paginas?.length > 0" class="pagination" > <!--siempre es bueno validar si paginas existe-->
+    <!--style="overflow: scroll;"-->
+    <li class="page-item" *ngIf="paginator.number > 0"><!-- cuando sea mayor que 0 o mayor que la primera pagina mostramos el link para volver atras -->
+        <a class="page-link" [routerLink]="['/clientes/page', paginator.number-1]"> &laquo; </a>
+    </li>
+
+    <li [ngClass]="paginator.first?'disabled page-item': 'page-item'">
+    <!--[ngClass]="paginator.number == 0?'disabled page-item': 'page-item'"-->
+        <a class="page-link" [routerLink]="['/clientes/page', 0]"> Primera </a>
+    </li>
+
+    <li class="page-item" *ngFor="let numpagina of paginas" [ngClass]="pagina-1 == paginator.number? 'active' : ''">
+        <!-- [ngClass]="class: true", validar una expresion y si es correcta colocar un estilo  -->
+        <!--colocamos un span comparando pagina-1 con paginator.number de component para no cargar la misma pagina 2 veces-->
+        <span class="page-link" *ngIf="pagina-1 == paginator.number" >{{ numpagina }}</span>
+        <a class="page-link" *ngIf="pagina-1 != paginator.number" [routerLink]="['/clientes/page', numpagina-1]"> {{ numpagina }} </a><!--[routerLink]="['',]" primero parametro link, y el segundo el valor del parametro pag -->
+    </li><!--el Ngfor tiene que interar sobre un tipo Arreglo o colleccion-->
+
+    <li [ngClass]="paginator.last?'disabled page-item': 'page-item'">
+    <!--[ngClass]="paginator.number == paginator.totalPages-1?'disabled page-item': 'page-item'"-->
+        <a class="page-link" [routerLink]="['/clientes/page', paginator.totalPages-1]"> Ultima </a>
+    </li>
+
+    <li class="page-item" *ngIf="paginator.number < paginator.totalPages-1">
+        <a class="page-link" [routerLink]="['/clientes/page', paginator.number+1]"> &raquo; </a>
+    </li>
+
+</ul>
+

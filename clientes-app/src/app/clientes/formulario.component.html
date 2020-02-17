@@ -1,0 +1,98 @@
+<ul class="alert alert-danger" *ngIf="errores?.length > 0">
+    <li *ngFor="let err of errores">
+        {{ err }}
+    </li>
+</ul>
+<div class="card bg-dark text-white">
+    <div class="card-header" *ngIf="!clien.a_id else elseBlock"> 
+        <h1> {{ titulo }}  </h1>
+    </div>
+        <div class="card-body">
+
+            <form #clienteform="ngForm"><!--la vincula a un formulario para rastrear el valor agregado del formulario y el estado de validación.-->
+                <div class="form-group row">
+                    <label for="nombre" class="col-form-label col-sm-2">Nombre</label>
+                    <div class="col-sm-6">
+                        <input [(ngModel)]="clien.a_name" name="a_name"  type="text" id="" class="form-control" #nombre="ngModel"> <!--required minlength="4"-->
+                        <div class="alert alert-danger" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
+                            <div *ngIf="nombre.errors.required">
+                                El nombre es requerido
+                            </div>
+                            <div *ngIf="nombre.errors.minlength">
+                                El nombre debe tener almenos 4 caracteres
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="apellidos" class="col-form-label col-sm-2">Apellidos</label>
+                    <div class="col-sm-6">
+                        <input [(ngModel)]="clien.a_lastname" name="a_lastname"  type="text" id="" class="form-control" #apellido="ngModel"><!--required -->
+                        <div class="alert alert-danger" *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)">
+                            <div *ngIf="apellido.errors.required">
+                                El apellido es requerido
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <!--1.Para agregar datapicker de angular, se instala en la raiz del proyecto: ng add @angular/material
+                        2. Luego se importa en appmodule: import { MatDatepickerModule, MatNativeDateModule } from '@angular/material';
+                        MatDatepickerModule, MatNativeDateModule
+                        3. para arreglar la fecha en editar se instala en la raiz: npm install --save @angular/material-moment-adapter
+                        4. luego npm install --save moment para instalar en componente
+                    -->
+                    <label for="fechanaci" class="col-form-label col-sm-2">Fecha Nacimiento</label>
+                    <div class="col-sm-6">
+                        <!-- #email="ngModel", required email-->
+                        <!-- <input [(ngModel)]="clien.a_fechanaci" name="a_fechanaci"  type="date" id="" class="form-control"> -->
+                        <input [matDatepicker]="myDatepicker" [(ngModel)]="clien.a_fechanaci" name="a_fechanaci" style="display: inline;" class="form-control; width:300px;">
+                        <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
+                        <mat-datepicker #myDatepicker></mat-datepicker>
+                        <!--<div class="alert alert-danger" *ngIf="email.invalid && (email.dirty || email.touched)">
+                           <div *ngIf="email.errors.required">
+                                El email es requerido
+                            </div>
+                            <div *ngIf="email.errors.email">
+                                El email debe tener un formato valido
+                            </div>
+                        </div>
+                        -->
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="region" class="col-form-label col-sm-2">Región</label>
+                    <div class="col-sm-6">
+                        <select [compareWith]="compararRegion" [(ngModel)]="clien.region" name="region" class="form-control; width:500px;">
+                            <option [ngValue]="undefined">--- Seleccionar una Region ---</option>
+                            <option *ngFor="let region of regiones" [ngValue]="region"> {{ region.r_name }} </option>
+                            <!--
+                                [ngValue], es directiva
+                                [compareWith]="compararRegion", se va a utilizar para comparar los id, para mostrar el objeto
+                                seleccionado
+                            -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="autor" class="col-form-label col-sm-2">Autor</label>
+                    <div class="col-sm-6">
+                        <input [(ngModel)]="clien.a_tutor" name="a_tutor"  type="text" id="" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <button (click)='CrearAlumno()' *ngIf="!clien.a_id else elseBlock" [disabled]="!clienteform.form.valid" class="btn btn-primary" role="button"> Crear Cliente </button>
+
+                        <ng-template #elseBlock>
+                            <button (click)='updateclientes()' [disabled]="!clienteform.form.valid" class="btn btn-primary" role="button"> Actualizar Cliente </button>
+                        </ng-template>
+                    </div>
+                </div>
+            </form>
+        </div>
+</div>
